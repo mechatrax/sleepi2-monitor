@@ -1,0 +1,153 @@
+#!/usr/bin/env python3
+
+import sys
+import configparser
+import subprocess
+import time
+import sleepi
+
+
+PROGRAM_VERSION = '1.0'
+
+ENV_FILE = '/etc/default/sleepi2'
+DEFAULT_I2C_ADDRESS = '0x69'
+DEFAULT_I2C_BUS = '1'
+
+CONFIG_FILE = '/etc/sleepi2/sleepi2-monitor.conf'
+
+
+class Sleepi2Monitor(object):
+    def __init__(self, sleepi2, name, config, trigger):
+        self.sleepi2 = sleepi2
+        self.name = name
+        self.command = config['command']
+        self.oneshot = config['oneshot']
+        self.threshold = config['threshold']
+        self.trigger = trigger
+
+    def get(self):
+        return self.sleepi2.registers[self.name].value
+    
+    def is_triggered(self):
+        return self.trigger(self.get(), self.threshold)
+    
+    def do_action(self):
+        return subprocess.call('/bin/bash -c ' + self.command, shell=True)
+
+
+def is_over(count, threshold):
+    if count >= threshold:
+        return 1
+    return 0
+
+
+def is_under(count, threshold):
+    if count <= threshold:
+        return 1
+    return 0
+
+
+def parse_environment(path):
+    parser = configparser.ConfigParser()
+    parser.read_dict({'DEFAULT': {
+        'I2C_ADDRESS': DEFAULT_I2C_ADDRESS,
+        'I2C_BUS': DEFAULT_I2C_BUS,
+    }})
+   
+    try: 
+        with open(path, 'r') as file:
+            string = file.read()
+    except IOError as e:
+        print("Cannot access {}.".format(path))
+        exit(e)
+    
+    parser.read_string('[env]' + string)
+    env = parser['env']
+    
+    return env 
+
+
+def parse_section(section):
+    params = {}
+   
+    if 'command' in section:
+        params['command'] = section['command']
+    else:
+        return {}
+    
+    if 'oneshot' in section:
+        params['oneshot'] = section.getboolean('oneshot')
+    else:
+        return {}
+    
+    if 'threshold' in section:
+        params['threshold'] = section.getint('threshold')
+    else:
+        return {}
+    
+    return params
+
+
+def parse_config(path, sections):
+    parser = configparser.ConfigParser()
+
+    try: 
+        with open(path, 'r') as file:
+            parser.read(path)
+    except IOError as e:
+        print("Cannot access {}.".format(path))
+        exit(e)
+   
+    config = {}
+    
+    for sect in sections:
+        if sect in parser:
+            config[sect] = parse_section(parser[sect])
+    
+    return config
+
+
+def main(args):
+    params = {
+        'switch': ('push_switch_count', is_over),
+        'extin': ('external_input_count', is_over),
+        'voltage': ('voltage', is_under),
+    }
+    env = parse_environment(ENV_FILE)
+    configs = parse_config(CONFIG_FILE, params.keys())
+    bus = int(env['I2C_BUS'])
+    addr = int(env['I2C_ADDRESS'], 16)
+    sleepi2 = sleepi.Sleepi2(bus, addr)
+    monitors = []
+    
+    if args[0:] and args[0] == '-D':
+        loop = True
+    else:
+        loop = False
+    
+    for sect, param in params.items():
+        if sect not in configs:
+            continue
+        name = param[0]
+        func = param[1]
+        conf = configs[sect]
+        if conf['threshold'] != 0:
+            monitors.append(Sleepi2Monitor(sleepi2, name, conf, func))
+    
+    while True:
+        for mon in monitors:
+            if mon.is_triggered():
+                mon.do_action()
+        if loop:
+            time.sleep(1)
+        else:
+            break
+
+
+if __name__ == '__main__':
+    argv = sys.argv
+    try:
+        main(argv[1:])
+    except KeyboardInterrupt:
+        sys.exit(0)
+

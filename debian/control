@@ -1,0 +1,15 @@
+Source: sleepi2-monitor
+Section: misc
+Priority: extra
+Maintainer: Masahiro Honda <honda@mechatrax.com>
+Build-Depends: debhelper (>= 9), dh-systemd(>= 1.5.0)
+Standards-Version: 3.9.6
+Vcs-Git: https://github.com/mechatrax/sleepi2-monitor.git
+Vcs-browser: https://github.com/mechatrax/sleepi2-monitor
+Homepage: http://www.mechatrax.com/
+
+Package: sleepi2-monitor
+Architecture: all
+Depends: ${misc:Depends}, sleepi2-utils, python3-sleepi, python3, systemd
+Description: Monitoring daemon for slee-Pi 2
+ This package contains the daemon to monitor slee-Pi 2.

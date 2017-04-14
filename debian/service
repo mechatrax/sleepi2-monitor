@@ -1,0 +1,12 @@
+[Unit]
+Description=sleepi2 monitoring daemon
+After=sleepi2-start.service
+
+[Service]
+ExecStart=/usr/sbin/sleepi2mon -D
+Restart=always
+Type=simple
+
+[Install]
+WantedBy=multi-user.target
+
