@@ -1,0 +1,14 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+%:
+	dh $@ --with systemd
+
+override_dh_installinit:
+	dh_systemd_enable sleepi2-monitor.service
+	dh_installinit --no-start --noscripts
+	dh_systemd_start
+
