@@ -1,3 +1,9 @@
+sleepi2-monitor (1.0.1) unstable; urgency=medium
+
+  * Fix config path
+
+ -- Masahiro Honda <honda@mechatrax.com>  Tue, 18 Apr 2017 10:22:38 +0900
+
 sleepi2-monitor (1.0.0) unstable; urgency=medium
 
   * Initial release
