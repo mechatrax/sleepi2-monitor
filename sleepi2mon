@@ -13,7 +13,7 @@ ENV_FILE = '/etc/default/sleepi2'
 DEFAULT_I2C_ADDRESS = '0x69'
 DEFAULT_I2C_BUS = '1'
 
-CONFIG_FILE = '/etc/sleepi2/sleepi2-monitor.conf'
+CONFIG_FILE = '/etc/sleepi2-monitor.conf'
 
 
 class Sleepi2Monitor(object):
