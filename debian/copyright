@@ -1,6 +1,6 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: sleepi2-monitor
-Source: https://github.com/MechaTracks/sleepi2-monitor
+Source: https://github.com/mechatrax/sleepi2-monitor
 
 Files: *
 Copyright: 2017 MechaTracks Co., Ltd. <info@mechatrax.com>
