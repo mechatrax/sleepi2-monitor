@@ -1,12 +1,12 @@
 Source: sleepi2-monitor
 Section: misc
-Priority: extra
+Priority: optional
 Maintainer: Masahiro Honda <honda@mechatrax.com>
-Build-Depends: debhelper (>= 9), dh-systemd(>= 1.5.0)
-Standards-Version: 3.9.6
+Build-Depends: debhelper (>= 9), dh-systemd(>= 1.5)
+Standards-Version: 3.9.8
 Vcs-Git: https://github.com/mechatrax/sleepi2-monitor.git
 Vcs-browser: https://github.com/mechatrax/sleepi2-monitor
-Homepage: http://www.mechatrax.com/
+Homepage: https://www.mechatrax.com/
 
 Package: sleepi2-monitor
 Architecture: all
