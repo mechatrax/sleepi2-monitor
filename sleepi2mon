@@ -7,7 +7,7 @@ import time
 import sleepi
 
 
-PROGRAM_VERSION = '1.1'
+PROGRAM_VERSION = '1.2'
 
 ENV_FILE = '/etc/default/sleepi2'
 DEFAULT_I2C_ADDRESS = '0x69'
@@ -32,14 +32,14 @@ class Sleepi2Monitor(object):
     def is_triggered(self):
         result = self.trigger(self.get(), self.threshold)
         if self.oneshot:
-            if result == False:
+            if not result:
                 self.done = False
         return result
     
     def do_action(self):
         if self.oneshot:
             if self.done:
-                return True
+                return 0
             else:
                 self.done = True
         return subprocess.call('/bin/bash -c ' + self.command, shell=True)
@@ -103,6 +103,8 @@ def parse_common(section):
    
     if 'interval' in section:
         params['interval'] = section.getint('interval')
+    else:
+        return {}
     
     return params
 

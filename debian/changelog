@@ -1,6 +1,17 @@
+sleepi2-monitor (1.2.0) buster; urgency=medium
+
+  * sleepi2mon:
+    - Fix oneshot action
+    - Fix config parser
+  * debian/changelog: Fix format
+  * Update debhelper compatibility level to 12
+  * Bump Standards-Version to 4.3.0
+
+ -- Masahiro Honda <honda@mechatrax.com>  Tue, 09 Jul 2019 10:20:00 +0900
+
 sleepi2-monitor (1.1.0) unstable; urgency=medium
 
-  * Fix sleepi2mon:
+  * sleepi2mon:
     - Fix interval operation.
     - Fix oneshot action.
   * debian/control: Change Build-Depends to debhelper (>= 10)
